@@ -1,0 +1,245 @@
+/* ==========================================================================
+ * Arena Mixed Fonts - fonts.css                                  v1.0.0
+ * --------------------------------------------------------------------------
+ * ONE virtual family ("ArenaMixed") built from two real fonts:
+ *
+ *   English / Latin characters -> Inter      (fonts/Inter-Regular.woff2 / -Bold)
+ *   Persian / Arabic characters -> Vazirmatn (fonts/Vazirmatn-Regular.woff2 / -Bold)
+ *
+ * The browser picks the font per CHARACTER, using unicode-range. So a single
+ * line such as:   سلام، این یک English test با ۱۲۳ و 456 است
+ * is rendered with both fonts at the same time. No JavaScript, no extra
+ * elements, no language detection.
+ *
+ * File layout / order (do not reorder without reading the comments):
+ *   1. CONFIG
+ *   2. @font-face  -> English (Latin) faces   (declared FIRST)
+ *   3. @font-face  -> Persian (Arabic) faces  (declared AFTER, so they win)
+ *   4. OPTIONAL    -> make ASCII digits 0-9 use the Persian font
+ *   5. Apply "ArenaMixed" to the page UI + chat content
+ *   6. Exceptions  -> code / math / icons (documented, already handled above)
+ * ========================================================================== */
+
+
+/* ==========================================================================
+ * 1. CONFIG - the only part you normally need to edit
+ * ========================================================================== */
+
+/* (a) Family name + fallback stack.
+ *     The fallback MUST stay: characters that neither font contains (emoji,
+ *     CJK, Cyrillic, ...) are then drawn by a normal system font. */
+:root {
+  --arena-font-family: "ArenaMixed";
+  --arena-font-fallback: system-ui, sans-serif;
+}
+
+/* (b) Files and weights.
+ *     - To swap a font: replace the file inside fonts/, keeping the same name.
+ *     - Each @font-face below is marked "[CONFIG]" where you may want to touch
+ *       something: "size-adjust" (= visual size of that font, default 100%).
+ *       If Persian text looks bigger than the English text, lower size-adjust
+ *       on the two Vazirmatn faces only (e.g. 96%); if it looks smaller, raise
+ *       it. Change ONE language at a time to see the difference.
+ *     - Variable fonts work too: use one file per language with
+ *       "font-weight: 100 900;" instead of two static @font-face rules.
+ *     - format() hints: use format("woff2") / ("woff") / ("truetype") /
+ *       ("opentype") to match the real file type. */
+
+/* ==========================================================================
+ * 2. ENGLISH (Latin) faces - Inter
+ *
+ * unicode-range = the Google Fonts "latin" + "latin-ext" subsets, with
+ * U+200C (ZWNJ) and U+200D (ZWJ) REMOVED, because those two control
+ * characters are needed by the Persian font for correct letter joining.
+ * In the Google "latin" subset they are hidden inside "U+2000-206F", so that
+ * range is split here into "U+2000-200B" and "U+200E-206F".
+ *
+ * These faces are declared BEFORE the Persian ones (see section 3).
+ * ========================================================================== */
+
+/* --- Inter Regular (400) -------------------------------------------------- */
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 100%; /* [CONFIG] (b) English text size */
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Inter-Regular.woff2") format("woff2");
+  unicode-range:
+    /* latin subset, ZWNJ/ZWJ removed (2000-200F -> 2000-200B + 200E-206F) */
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-200B, U+200E-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD,
+    /* latin-ext subset */
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* --- Inter Bold (700) ----------------------------------------------------- */
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  size-adjust: 100%; /* [CONFIG] (b) */
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Inter-Bold.woff2") format("woff2");
+  unicode-range:
+    /* latin subset, ZWNJ/ZWJ removed */
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-200B, U+200E-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD,
+    /* latin-ext subset */
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+
+
+/* ==========================================================================
+ * 3. PERSIAN (Arabic script) faces - Vazirmatn
+ *
+ * Declared AFTER the English faces on purpose: when two faces of the same
+ * family can render the same code point, the browser uses the LAST one, so
+ * Persian always wins on any overlap.
+ *
+ * The ranges below cover Persian letters (پ چ ژ گ ...), Persian digits
+ * (۰-۹ = U+06F0-U+06F9), Arabic-Indic digits (٠-٩), Persian punctuation
+ * (، ؛ ؟ ...), Arabic presentation forms, and U+200C-200D (ZWNJ / ZWJ,
+ * used for correct joining inside words like "می‌خواهم").
+ * ========================================================================== */
+
+/* --- Vazirmatn Regular (400) --------------------------------------------- */
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 100%; /* [CONFIG] (b) Persian text size */
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Vazirmatn-Regular.woff2") format("woff2");
+  unicode-range:
+    U+0600-06FF, /* Arabic: Persian letters + Persian digits ۰-۹ + ، ؛ ؟ */
+    U+0750-077F, /* Arabic Supplement */
+    U+08A0-08FF, /* Arabic Extended-A */
+    U+FB50-FDFF, /* Arabic Presentation Forms-A */
+    U+FE70-FEFC, /* Arabic Presentation Forms-B */
+    U+200C-200D; /* ZWNJ / ZWJ - joining control characters */
+}
+
+/* --- Vazirmatn Bold (700) ------------------------------------------------ */
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  size-adjust: 100%; /* [CONFIG] (b) */
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Vazirmatn-Bold.woff2") format("woff2");
+  unicode-range:
+    U+0600-06FF,
+    U+0750-077F,
+    U+08A0-08FF,
+    U+FB50-FDFF,
+    U+FE70-FEFC,
+    U+200C-200D;
+}
+
+
+/* ==========================================================================
+ * 4. OPTIONAL - make ASCII digits (0-9) use the Persian font
+ *
+ * By default ASCII digits are covered by the English faces above, so "456"
+ * is drawn with Inter and "۱۲۳" with Vazirmatn.
+ * If you want "456" to be drawn by the Persian font as well, delete the lines
+ * that contain "#digits-start" and "#digits-end" (they are only comment
+ * markers, the two @font-face rules in between are already written; keep them
+ * AFTER the English faces - a later @font-face wins on overlapping code
+ * points).
+ *
+ * Note: this only changes WHICH font draws the digits; the characters stay
+ * ASCII (0-9). Vazirmatn draws 0-9 with Latin-shaped digits; if you want the
+ * shaped Persian digits (۰-۹) for ASCII input, use the "Vazirmatn-FD"
+ * (Farsi-Digits) files from the Vazirmatn release instead, with the same
+ * U+0030-0039 range.
+ * ========================================================================== */
+/* #digits-start
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 100%;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Vazirmatn-Regular.woff2") format("woff2");
+  unicode-range: U+0030-0039;
+}
+@font-face {
+  font-family: "ArenaMixed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  size-adjust: 100%;
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Vazirmatn-Bold.woff2") format("woff2");
+  unicode-range: U+0030-0039;
+}
+#digits-end */
+
+/* ==========================================================================
+ * 5. APPLY "ArenaMixed" to the whole page (UI + chat content)
+ *
+ * - The selector means "html, body and every element inside <body>", with
+ *   !important, so the site's own font-family rules cannot win.
+ * - The :not(...) chain is the skip list of section 6. Each skipped element
+ *   is written twice: ":not(code)" skips <code> itself, ":not(code *)" skips
+ *   everything inside it. That way code blocks keep their monospace font and
+ *   math keeps its own fonts, without any JavaScript.
+ * - IMPORTANT: this selector must stay on ONE line. In CSS, a line break
+ *   between two simple selectors means a "descendant" combinator, so the
+ *   :not(...) parts cannot be wrapped over several lines.
+ * - The value is built with the two variables of section 1, i.e. it is
+ *   font-family: "ArenaMixed", system-ui, sans-serif;
+ * ========================================================================== */
+:root, body, body *:not(pre):not(pre *):not(code):not(code *):not(kbd):not(kbd *):not(samp):not(samp *):not(tt):not(tt *):not(math):not(math *):not(mjx-container):not(mjx-container *):not(.katex):not(.katex *):not(svg):not(svg *):not(.monaco-editor):not(.monaco-editor *):not(.cm-editor):not(.cm-editor *):not(.ace_editor):not(.ace_editor *):not([class*="icon" i]):not([class*="icon" i] *):not([class*="fa-"]):not([class*="fa-"] *):not([class*="font-mono"]):not([class*="font-mono"] *) {
+  font-family: var(--arena-font-family), var(--arena-font-fallback) !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 5.1 Form controls and rich-text editors (this is the chat prompt box)
+ * Chrome does not let form controls inherit font-family from their parents,
+ * so they get their own rule. They are already covered by 5, this block only
+ * makes sure the prompt box works even if you shrink the selector of 5.
+ * [contenteditable] covers rich-text chat inputs (ProseMirror, Lexical, ...).
+ * -------------------------------------------------------------------------- */
+input, textarea, select, optgroup, option, button,
+[contenteditable]:not([contenteditable="false"]),
+[contenteditable]:not([contenteditable="false"]) * {
+  font-family: var(--arena-font-family), var(--arena-font-fallback) !important;
+}
+
+
+/* ==========================================================================
+ * 6. WHAT IS *NOT* TOUCHED (explanation only - nothing to edit here)
+ *
+ *  a) Code / monospace : pre, code, kbd, samp, tt, any element whose class
+ *     contains "font-mono", and the Monaco / CodeMirror / Ace editors with
+ *     their children -> they keep the original monospace font (including the
+ *     "copy code" blocks of AI answers and code previews).
+ *  b) Math : <math>, mjx-container (MathJax) and .katex (KaTeX) plus their
+ *     children -> they keep their own math fonts and letter shapes.
+ *  c) Icons : <svg> and its children, and any element whose class contains
+ *     "icon" or "fa-" (Font Awesome, Material Icons, Lucide, ...) -> icon
+ *     fonts and SVG icons are never replaced.
+ *
+ *  If some place still uses the wrong font, add its selector to the :not(...)
+ *  chain of section 5, twice: "sel" and "sel *".
+ * ========================================================================== */
+
+/* ==========================================================================
+ * 7. SELECTORS YOU MAY WANT TO ADJUST for arena.ai
+ * arena.ai is a Next.js/Tailwind app: it sets fonts with Tailwind classes
+ * ("font-sans", "font-mono", ...) and next/font CSS variables. The rules
+ * above override those on purpose (except the skip list), so normally nothing
+ * has to be changed. If a specific area looks wrong, add its selector to the
+ * :not(...) chain of section 5 - e.g.
+ *   :not(.my-code-wrapper):not(.my-code-wrapper *)
+ * ========================================================================== */
+
