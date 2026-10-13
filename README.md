@@ -104,7 +104,6 @@ arena-mixed-fonts/
 | ارقام ASCII (مثل 456) با فونت فارسی رسم شوند | `fonts.css` بخش ۴ | خط‌های دارای `#digits-start` و `#digits-end` را حذف کن (بلوکش از قبل نوشته شده) |
 | فونت را عوض کنم | `fonts/` + `fonts.css` | فایل را با **همان نام** جایگزین کن؛ اگر نام عوض شد، `src` را هم ویرایش کن |
 | فایل `ttf` / `otf` / `woff` بگذارم (به‌جای woff2) | `fonts.css` | در همان `@font-face`، فقط `format(...)` را عوض کن: `format("truetype")` برای ttf، `format("opentype")` برای otf، `format("woff")` برای woff |
-
 | وزن‌های 500/600 هم داشته باشم | `fonts.css` | بلوک `@font-face` جدید با همان `font-family: "ArenaMixed"` و `font-weight: 500` بساز و فایل `Vazirmatn-Medium.woff2` / `Inter-Medium.woff2` را در `fonts/` بگذار |
 | فونت متغیر (variable) بگذارم | `fonts.css` | یک فایل با `font-weight: 100 900;` و دو بلوک وزن‌ثابت را حذف کن |
 | داخل iframeها هم اعمال شود | `manifest.json` | `"all_frames": true` — ولی پیش‌نمایش اپ‌های ساخته‌شده هم عوض می‌شود (پیشنهاد نمی‌کنم) |
@@ -142,7 +141,6 @@ arena-mixed-fonts/
 | --- | --- |
 | خط ترکیبی `سلام، این یک English sentence با ۱۲۳ و 456 است.` | `Inter(28)` + `Vazirmatn(18)` ✅ هر دو فونت در یک خط |
 | ارقام ASCII `456` | `Inter` ✅ (و اگر بلوک اختیاری بخش ۴ فایل CSS را فعال کنی، `Vazirmatn` می‌شود — تست شد) |
-
 | متن فقط انگلیسی `Hello World 456` | فقط `Inter` ✅ |
 | متن فقط فارسی `سلام دنیا ۱۲۳` | فقط `Vazirmatn` ✅ |
 | `می‌خواهم` (نیم‌فاصله) | `Vazirmatn` ✅ و عرض متن با/بی‌نیم‌فاصله تفاوت دارد (یعنی شکل‌دهی و اتصال درست انجام می‌شود) |
