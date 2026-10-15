@@ -3,12 +3,18 @@
   "name": "Arena Mixed Fonts (Persian + English)",
   "version": "1.0.0",
   "description": "Two fonts at the same time on arena.ai: a Persian font for Persian text and an English font for Latin text, chosen per character by the browser.",
-  "minimum_chrome_version": "88",
+  "minimum_chrome_version": "105",
 
   "content_scripts": [
     {
       "matches": ["https://arena.ai/*", "https://*.arena.ai/*"],
       "css": ["fonts.css"],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": ["https://arena.ai/*", "https://*.arena.ai/*"],
+      "css": ["rtl.css"],
       "run_at": "document_start",
       "all_frames": false
     }

@@ -1,0 +1,114 @@
+/* ==========================================================================
+ * Arena Mixed Fonts - rtl.css                                    v1.0.0
+ * --------------------------------------------------------------------------
+ * OPTIONAL companion file of fonts.css. It only changes text direction and
+ * alignment, never the fonts themselves.
+ *
+ * Goal: the chat is read right-to-left (Persian), but Latin words and numbers
+ * inside it must keep their natural order - nothing should jump around. So:
+ *
+ *   - every chat text block (Persian AND English) is right aligned -> tidy
+ *   - unicode-bidi: plaintext gives each block its own natural direction,
+ *     taken from its first strong character (exactly what dir="auto" does):
+ *       * Persian block  -> RTL  (and right aligned)
+ *       * English block  -> LTR  (word order and the final "." stay correct)
+ *         while the line itself is still pushed to the right side
+ *   - Latin runs wrapped in inline tags (a, code, strong, em, ...) are
+ *     isolated, like <bdi>, so punctuation and numbers around them are not
+ *     dragged to the other side of the line
+ *   - code and math always stay LTR + left aligned (never mirrored)
+ *   - the site's own chrome (sidebar, panels, toolbars, the prompt box) is
+ *     left exactly as it was
+ *
+ * No JavaScript, no DOM change, no extra elements: only CSS.
+ * To switch this whole file off: remove "rtl.css" from manifest.json and
+ * reload the extension in chrome://extensions.
+ *
+ * NOTE about the selectors: every :not(...) below uses a simple argument
+ * (an element, class or attribute name). Complex arguments such as
+ * ":not(nav *)" are NOT used on purpose, because Chromium does not match
+ * them reliably in this position.
+ * ========================================================================== */
+
+
+/* ==========================================================================
+ * 1. CONFIG
+ * --------------------------------------------------------------------------
+ * (a) SCOPE: where the chat text lives. If a place is not covered, copy its
+ *     selector from DevTools (right click the element > Copy > Copy selector)
+ *     and add it to the :is(...) list of rule 2 (and of rule 3 if you need
+ *     the code/math exception there too).
+ * (b) STRICT RTL: want every block forced to RTL, even English ones?
+ *     In rule 2 replace "unicode-bidi: plaintext" with "unicode-bidi: isolate".
+ *     Note: then the final "." of an English sentence moves to the left side
+ *     (normal bidi behaviour), which is why plaintext is the default.
+ * ========================================================================== */
+
+
+/* ==========================================================================
+ * 2. CHAT TEXT BLOCKS: right aligned, natural direction per block
+ * ========================================================================== */
+:is(main, [role="main"], [class*="prose" i], [class*="markdown" i], [class*="message" i], [class*="chat" i], [role="log"], [data-message-id]) :is(p, li, h1, h2, h3, h4, h5, h6, blockquote, dd, dt, figcaption, td, th, ul, ol, div:not(:has(*))) {
+  direction: rtl !important;           /* list markers / indentation on the right */
+  text-align: right !important;        /* Persian AND English lines hug the right edge */
+  unicode-bidi: plaintext !important;  /* per-block natural order: nothing jumps */
+}
+
+
+/* ==========================================================================
+ * 3. CODE AND MATH: always LTR + left aligned, also for their children
+ *    (this rule is more specific than rule 2 on purpose, so it wins)
+ * ========================================================================== */
+:is(main, [role="main"], [class*="prose" i], [class*="markdown" i], [class*="message" i], [class*="chat" i], [role="log"], [data-message-id]) :is(pre, code, kbd, samp, var, math, mjx-container, .katex, .monaco-editor, .cm-editor, .ace_editor, [class*="font-mono" i]),
+:is(main, [role="main"], [class*="prose" i], [class*="markdown" i], [class*="message" i], [class*="chat" i], [role="log"], [data-message-id]) :is(pre, code, kbd, samp, var, math, mjx-container, .katex, .monaco-editor, .cm-editor, .ace_editor, [class*="font-mono" i]) * {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+}
+
+
+/* ==========================================================================
+ * 4. INLINE LATIN RUNS: isolated (like <bdi>), everywhere on the site.
+ *    This is what keeps a number or an English word from dragging the
+ *    neighbouring punctuation ("," "." ")" ...) to the wrong side.
+ * ========================================================================== */
+a, code, kbd, samp, var, strong, b, em, i, mark, time, abbr, sub, sup, q, cite, [dir] {
+  unicode-bidi: isolate !important;
+}
+
+
+/* ==========================================================================
+ * 4b. ICONS AND SVG: keep their own (LTR) direction, so icon fonts that use
+ *     ligatures (Material Symbols, ...) never mirror.
+ * ========================================================================== */
+:is(svg, [class*="icon" i], [class*="fa-"]) {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+
+/* ==========================================================================
+ * 5. THE SITE'S OWN CHROME: put back to normal
+ *    (sidebar, panels, toolbars, forms). Same specificity as rule 2 but
+ *    written later, so it wins for those areas.
+ * ========================================================================== */
+:is(nav, aside, form, header, footer, [role="toolbar"], [role="menu"], [class*="sidebar" i], [class*="panel" i]) :is(p, li, h1, h2, h3, h4, h5, h6, blockquote, dd, dt, figcaption, td, th, ul, ol, div:not(:has(*))) {
+  direction: ltr !important;
+  text-align: inherit !important;
+  unicode-bidi: normal !important;
+}
+
+
+/* ==========================================================================
+ * 6. LEFT ALONE ON PURPOSE
+ *    input / textarea / select / [contenteditable] -> the prompt box keeps its
+ *    own direction, so typing English and Persian stays predictable.
+ *    Want the prompt box RTL too? Uncomment the rule below.
+ * ========================================================================== */
+/*
+input, textarea, [contenteditable]:not([contenteditable="false"]) {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: plaintext !important;
+}
+*/
